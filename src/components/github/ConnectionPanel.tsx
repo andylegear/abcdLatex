@@ -213,6 +213,22 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
 
 			{isConnected && (
 				<div className="abcd-file-browser">
+					<div className="abcd-open-project">
+						<button
+							type="button"
+							className="abcd-btn-primary abcd-btn-open-project"
+							onClick={() => {
+								const parsed = parseRepoInput(repoInput);
+								if (parsed) onFileOpen(parsed.owner, parsed.repo, branch, '');
+							}}
+						>
+							🚀 Open Project in Editor
+						</button>
+						<p className="abcd-open-project-hint">
+							Loads all files into the editor with file tree, LaTeX compilation, and PDF preview.
+						</p>
+					</div>
+
 					<div className="abcd-branch-selector">
 						<label htmlFor="branch-select">Branch:</label>
 						<select

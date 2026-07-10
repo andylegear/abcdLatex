@@ -26,7 +26,7 @@ const EditorApp = lazy(() => import('./EditorApp'));
 type View = 'landing' | 'connect' | 'editor';
 
 const AbcdRouter: React.FC = () => {
-	const { isAuthenticated, isInitializing, createProject } = useAuth();
+	const { isAuthenticated, isInitializing, createProject, createGuestAccount } = useAuth();
 	const [view, setView] = useState<View>('landing');
 	const [showHelp, setShowHelp] = useState(false);
 	const [conflict, setConflict] = useState<ConflictInfo | null>(null);
@@ -35,6 +35,16 @@ const AbcdRouter: React.FC = () => {
 	const [currentFile, setCurrentFile] = useState('');
 	const [docUrl, setDocUrl] = useState<YjsDocUrl | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
+
+	// Auto-create a local guest account if not authenticated
+	useEffect(() => {
+		if (isInitializing) return;
+		if (!isAuthenticated) {
+			createGuestAccount().catch((err) =>
+				console.warn('Failed to create guest account:', err)
+			);
+		}
+	}, [isInitializing, isAuthenticated, createGuestAccount]);
 
 	// Determine initial view and show help on first visit
 	useEffect(() => {
@@ -53,6 +63,10 @@ const AbcdRouter: React.FC = () => {
 	const setupEditorProject = useCallback(async (owner: string, repo: string, branch: string) => {
 		try {
 			setIsLoading(true);
+			// Ensure we have a local account
+			if (!isAuthenticated) {
+				await createGuestAccount();
+			}
 			// Use a valid UUID that passes TeXlyre's URL validation
 			const projectId = crypto.randomUUID();
 			const yjsUrl = `yjs:${projectId}` as YjsDocUrl;
@@ -63,16 +77,14 @@ const AbcdRouter: React.FC = () => {
 			const projectType = hasTypst ? 'typst' : 'latex';
 
 			// Create project entry
-			if (isAuthenticated) {
-				await createProject({
-					name: `${owner}/${repo}`,
-					description: `GitHub: ${owner}/${repo} (${branch})`,
-					type: projectType,
-					docUrl: yjsUrl,
-					tags: ['github'],
-					isFavorite: false,
-				});
-			}
+			await createProject({
+				name: `${owner}/${repo}`,
+				description: `GitHub: ${owner}/${repo} (${branch})`,
+				type: projectType,
+				docUrl: yjsUrl,
+				tags: ['github'],
+				isFavorite: false,
+			});
 
 			// Initialize file storage
 			await fileStorageService.initialize(yjsUrl);
@@ -117,7 +129,7 @@ const AbcdRouter: React.FC = () => {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [isAuthenticated, createProject]);
+	}, [isAuthenticated, createProject, createGuestAccount]);
 
 	const handleFileOpen = useCallback(async (owner: string, repo: string, branch: string, _filePath: string) => {
 		// When a file is selected from the browser, load the whole repo as a project

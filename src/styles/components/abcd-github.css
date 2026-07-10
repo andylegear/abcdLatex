@@ -288,6 +288,26 @@
   padding-top: 1rem;
 }
 
+.abcd-open-project {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.abcd-btn-open-project {
+  font-size: 1rem;
+  padding: 0.75rem 2rem;
+}
+
+.abcd-open-project-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
 .abcd-branch-selector {
   display: flex;
   align-items: center;
