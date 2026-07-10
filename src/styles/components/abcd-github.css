@@ -1,0 +1,614 @@
+/* src/styles/components/abcd-github.css */
+
+/* Header */
+.abcd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: #1a1a2e;
+  color: #fff;
+  border-bottom: 2px solid #16213e;
+  height: 48px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.abcd-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.abcd-header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.abcd-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.abcd-logo {
+  height: 28px;
+  width: auto;
+}
+
+.abcd-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.5px;
+}
+
+.abcd-current-file {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.abcd-btn-back {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.abcd-btn-back:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.abcd-help-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.abcd-help-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Main content area */
+.abcd-main {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+/* Connection panel */
+.abcd-connection-panel {
+  background: var(--pico-background-color, #fff);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.abcd-connection-form h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.abcd-field {
+  margin-bottom: 1rem;
+}
+
+.abcd-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.abcd-field input,
+.abcd-field select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.abcd-token-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.abcd-token-row input {
+  flex: 1;
+}
+
+.abcd-security-notice {
+  display: block;
+  margin-top: 0.4rem;
+  color: #856404;
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+/* Buttons */
+.abcd-btn-primary {
+  background: #0969da;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.abcd-btn-primary:hover {
+  background: #0550ae;
+}
+
+.abcd-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.abcd-btn-secondary {
+  background: #f6f8fa;
+  color: #24292f;
+  border: 1px solid #d0d7de;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.abcd-btn-secondary:hover {
+  background: #eaeef2;
+}
+
+.abcd-btn-small {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.abcd-btn-danger {
+  background: #cf222e;
+  color: #fff;
+  border: none;
+}
+
+.abcd-btn-danger:hover {
+  background: #a40e26;
+}
+
+.abcd-btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: inherit;
+}
+
+.abcd-btn-save {
+  background: #2da44e;
+  color: #fff;
+  border: none;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.abcd-btn-save:hover {
+  background: #218838;
+}
+
+/* User info */
+.abcd-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: #f0fdf4;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.abcd-user-info img {
+  border-radius: 50%;
+}
+
+/* Error */
+.abcd-error {
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* File browser */
+.abcd-file-browser {
+  margin-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+}
+
+.abcd-branch-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.abcd-branch-selector select {
+  width: auto;
+  min-width: 150px;
+}
+
+.abcd-path-breadcrumb {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.abcd-file-list {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.abcd-file-item {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.1s;
+}
+
+.abcd-file-item:hover {
+  background: #f0f9ff;
+}
+
+.abcd-file-item:last-child {
+  border-bottom: none;
+}
+
+/* Recent projects */
+.abcd-recent-projects {
+  background: var(--pico-background-color, #fff);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.abcd-recent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.abcd-recent-header h3 {
+  margin: 0;
+}
+
+.abcd-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.abcd-recent-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.abcd-recent-item:hover {
+  border-color: #0969da;
+  background: #f0f9ff;
+}
+
+.abcd-recent-item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.abcd-recent-item-repo {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.abcd-recent-item-branch {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.abcd-recent-item-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.abcd-recent-item-file {
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.abcd-recent-item-time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.abcd-recent-remove {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.2rem;
+}
+
+.abcd-recent-remove:hover {
+  color: #ef4444;
+}
+
+.abcd-recent-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--pico-background-color, #fff);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.abcd-recent-empty p {
+  color: #6b7280;
+  margin: 0.5rem 0 1.5rem;
+}
+
+/* Save status */
+.abcd-save-status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.abcd-status-idle { color: #6b7280; }
+.abcd-status-unsaved { color: #f59e0b; }
+.abcd-status-saving { color: #3b82f6; }
+.abcd-status-saved { color: #10b981; }
+.abcd-status-conflict { color: #ef4444; font-weight: 600; }
+.abcd-status-error { color: #ef4444; }
+
+.abcd-save-status-icon {
+  font-size: 1rem;
+}
+
+/* Overlays */
+.abcd-commit-overlay,
+.abcd-conflict-overlay,
+.abcd-help-overlay,
+.abcd-tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.abcd-commit-dialog,
+.abcd-conflict-dialog {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.abcd-commit-actions,
+.abcd-conflict-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* Conflict dialog */
+.abcd-conflict-dialog {
+  max-width: 700px;
+}
+
+.abcd-conflict-diff {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.abcd-conflict-pane {
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 0.5rem;
+  max-height: 200px;
+  overflow: auto;
+}
+
+.abcd-conflict-pane h4 {
+  font-size: 0.8rem;
+  margin: 0 0 0.5rem;
+  color: #6b7280;
+}
+
+.abcd-conflict-pane pre {
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+}
+
+.abcd-conflict-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.abcd-conflict-choice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* Help page */
+.abcd-help-page {
+  background: #fff;
+  border-radius: 8px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.abcd-help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem 0;
+  position: sticky;
+  top: 0;
+  background: #fff;
+}
+
+.abcd-help-content {
+  padding: 1rem 2rem 2rem;
+}
+
+.abcd-help-content section {
+  margin-bottom: 1.5rem;
+}
+
+.abcd-help-content h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a2e;
+}
+
+.abcd-help-content ol,
+.abcd-help-content ul {
+  padding-left: 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.abcd-help-content code {
+  background: #f3f4f6;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+.abcd-help-note {
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.abcd-help-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Tour */
+.abcd-tour-backdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.abcd-tour-tooltip {
+  position: relative;
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  max-width: 380px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.abcd-tour-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.abcd-tour-step-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.abcd-tour-dismiss {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #9ca3af;
+}
+
+.abcd-tour-tooltip h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.abcd-tour-tooltip p {
+  font-size: 0.85rem;
+  color: #4b5563;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
+.abcd-tour-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}

@@ -34,7 +34,8 @@ class CollabService {
 	private docContainers: Map<string, AnyDocContainer> = new Map();
 	private offlineStatusUnsubscribe: (() => void) | null = null;
 
-	private forceLocalConnections = false;
+	// ABCD: Force local-only mode — no WebRTC/WebSocket sync needed for sequential editing
+	private forceLocalConnections = true;
 
 	constructor() {
 		this.offlineStatusUnsubscribe = offlineService.addStatusListener(

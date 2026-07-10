@@ -1,0 +1,240 @@
+// src/components/github/ConnectionPanel.tsx
+import type React from 'react';
+import { useState, useEffect } from 'react';
+import { tokenStore } from '../../services/TokenStore';
+import { gitHubSyncService, type FileListItem } from '../../services/GitHubSyncService';
+
+interface ConnectionPanelProps {
+	onFileOpen: (owner: string, repo: string, branch: string, filePath: string) => void;
+}
+
+const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
+	const [token, setToken] = useState(tokenStore.getToken() || '');
+	const [repoInput, setRepoInput] = useState('');
+	const [branch, setBranch] = useState('main');
+	const [branches, setBranches] = useState<string[]>([]);
+	const [files, setFiles] = useState<FileListItem[]>([]);
+	const [currentPath, setCurrentPath] = useState('');
+	const [isConnecting, setIsConnecting] = useState(false);
+	const [isConnected, setIsConnected] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const [userInfo, setUserInfo] = useState<{ login: string; avatar_url: string } | null>(null);
+
+	useEffect(() => {
+		const savedToken = tokenStore.getToken();
+		if (savedToken) setToken(savedToken);
+	}, []);
+
+	const handleConnect = async () => {
+		if (!token.trim() || !repoInput.trim()) {
+			setError('Please enter both a token and repository (owner/repo).');
+			return;
+		}
+
+		const parts = repoInput.trim().split('/');
+		if (parts.length !== 2) {
+			setError('Repository must be in the format: owner/repo');
+			return;
+		}
+
+		setIsConnecting(true);
+		setError(null);
+		tokenStore.setToken(token.trim());
+
+		try {
+			const user = await gitHubSyncService.testConnection();
+			setUserInfo(user);
+
+			const [owner, repo] = parts;
+			const branchList = await gitHubSyncService.listBranches(owner, repo);
+			setBranches(branchList);
+			if (!branchList.includes(branch)) {
+				setBranch(branchList[0] || 'main');
+			}
+
+			const fileList = await gitHubSyncService.listFiles(owner, repo, branch);
+			setFiles(fileList);
+			setIsConnected(true);
+			setCurrentPath('');
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Connection failed');
+			setIsConnected(false);
+		} finally {
+			setIsConnecting(false);
+		}
+	};
+
+	const handleBranchChange = async (newBranch: string) => {
+		setBranch(newBranch);
+		const [owner, repo] = repoInput.split('/');
+		try {
+			const fileList = await gitHubSyncService.listFiles(owner, repo, newBranch);
+			setFiles(fileList);
+			setCurrentPath('');
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Failed to list files');
+		}
+	};
+
+	const handleNavigate = async (item: FileListItem) => {
+		const [owner, repo] = repoInput.split('/');
+		if (item.type === 'dir') {
+			try {
+				const fileList = await gitHubSyncService.listFiles(owner, repo, branch, item.path);
+				setFiles(fileList);
+				setCurrentPath(item.path);
+			} catch (err) {
+				setError(err instanceof Error ? err.message : 'Failed to navigate');
+			}
+		} else {
+			onFileOpen(owner, repo, branch, item.path);
+		}
+	};
+
+	const handleNavigateUp = async () => {
+		const [owner, repo] = repoInput.split('/');
+		const parentPath = currentPath.split('/').slice(0, -1).join('/');
+		try {
+			const fileList = await gitHubSyncService.listFiles(owner, repo, branch, parentPath);
+			setFiles(fileList);
+			setCurrentPath(parentPath);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Failed to navigate');
+		}
+	};
+
+	const handleForgetToken = () => {
+		tokenStore.clearToken();
+		setToken('');
+		setIsConnected(false);
+		setUserInfo(null);
+		setFiles([]);
+	};
+
+	return (
+		<div className="abcd-connection-panel">
+			<div className="abcd-connection-form">
+				<h3>Connect to GitHub Repository</h3>
+
+				<div className="abcd-field">
+					<label htmlFor="pat-input">
+						GitHub Fine-Grained Personal Access Token
+					</label>
+					<div className="abcd-token-row">
+						<input
+							id="pat-input"
+							type="password"
+							value={token}
+							onChange={(e) => setToken(e.target.value)}
+							placeholder="github_pat_..."
+							disabled={isConnected}
+						/>
+						{token && (
+							<button
+								type="button"
+								className="abcd-btn-small abcd-btn-danger"
+								onClick={handleForgetToken}
+								title="Remove stored token"
+							>
+								Forget Token
+							</button>
+						)}
+					</div>
+					<small className="abcd-security-notice">
+						⚠️ This token is stored unencrypted in your browser's localStorage.
+						Use a scoped, revocable fine-grained PAT with only "Contents: Read and write" permission.
+						It is only as safe as this device.
+					</small>
+				</div>
+
+				<div className="abcd-field">
+					<label htmlFor="repo-input">Repository (owner/repo)</label>
+					<input
+						id="repo-input"
+						type="text"
+						value={repoInput}
+						onChange={(e) => setRepoInput(e.target.value)}
+						placeholder="andylegear/my-latex-project"
+						disabled={isConnected}
+					/>
+				</div>
+
+				{!isConnected ? (
+					<button
+						type="button"
+						className="abcd-btn-primary"
+						onClick={handleConnect}
+						disabled={isConnecting}
+					>
+						{isConnecting ? 'Connecting...' : 'Connect'}
+					</button>
+				) : (
+					<button
+						type="button"
+						className="abcd-btn-secondary"
+						onClick={() => { setIsConnected(false); setFiles([]); }}
+					>
+						Disconnect
+					</button>
+				)}
+
+				{userInfo && (
+					<div className="abcd-user-info">
+						<img src={userInfo.avatar_url} alt="" width={24} height={24} />
+						<span>Connected as <strong>{userInfo.login}</strong></span>
+					</div>
+				)}
+
+				{error && <div className="abcd-error">{error}</div>}
+			</div>
+
+			{isConnected && (
+				<div className="abcd-file-browser">
+					<div className="abcd-branch-selector">
+						<label htmlFor="branch-select">Branch:</label>
+						<select
+							id="branch-select"
+							value={branch}
+							onChange={(e) => handleBranchChange(e.target.value)}
+						>
+							{branches.map((b) => (
+								<option key={b} value={b}>{b}</option>
+							))}
+						</select>
+					</div>
+
+					<div className="abcd-file-list">
+						<div className="abcd-path-breadcrumb">
+							📁 /{currentPath || ''}
+						</div>
+						{currentPath && (
+							<div
+								className="abcd-file-item abcd-file-item-up"
+								onClick={handleNavigateUp}
+								onKeyDown={(e) => e.key === 'Enter' && handleNavigateUp()}
+								tabIndex={0}
+								role="button"
+							>
+								⬆️ ..
+							</div>
+						)}
+						{files.map((item) => (
+							<div
+								key={item.path}
+								className={`abcd-file-item ${item.type === 'dir' ? 'abcd-file-dir' : 'abcd-file-file'}`}
+								onClick={() => handleNavigate(item)}
+								onKeyDown={(e) => e.key === 'Enter' && handleNavigate(item)}
+								tabIndex={0}
+								role="button"
+							>
+								{item.type === 'dir' ? '📁' : '📄'} {item.name}
+							</div>
+						))}
+					</div>
+				</div>
+			)}
+		</div>
+	);
+};
+
+export default ConnectionPanel;

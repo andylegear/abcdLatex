@@ -57,7 +57,8 @@ import './styles/components/typesetter.css';
 import './styles/components/splash-screen.css';
 import './styles/components/keyboard-shortcuts.css';
 import './styles/components/privacy.css';
-import AppRouter from './components/app/AppRouter';
+import './styles/components/abcd-github.css';
+import AbcdRouter from './components/app/AbcdRouter';
 import AppBootstrap from './components/app/AppSettingBootrap';
 import PasswordModal from './components/auth/PasswordModal';
 import SplashScreen from './components/common/SplashScreen';
@@ -166,7 +167,7 @@ function AppContent() {
 
 	return (
 		<>
-			<AppRouter />
+			<AbcdRouter />
 			<ConflictResolutionModal />
 			<FileConflictModal />
 			<PasswordModal

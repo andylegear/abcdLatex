@@ -2,17 +2,19 @@
 import type { TexlyreConfig } from '@/types/texlyre';
 
 const config: TexlyreConfig = {
-    title: 'TeXlyre',
-    tagline: 'A local-first LaTeX & Typst collaborative web editor',
-    url: 'https://texlyre.org',
-    baseUrl: '/texlyre/',
-    organizationName: 'texlyre',
-    projectName: 'texlyre',
+    title: 'ABCD LaTeX',
+    tagline: 'GitHub-backed LaTeX editor for the ABCD Research Project',
+    url: 'https://andylegear.github.io',
+    baseUrl: '/abcdLatex/',
+    organizationName: 'andylegear',
+    projectName: 'abcdLatex',
     favicon: '/favicon.ico',
 
 
     airgap: {
         allowedDomains: [
+            'andylegear.github.io',
+            'api.github.com',
             'texlyre.github.io',
             'texlyre.org',
             'typst.org',
