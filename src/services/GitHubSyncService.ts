@@ -130,6 +130,44 @@ class GitHubSyncService {
 		return branches.map((b) => b.name);
 	}
 
+	async loadRepoTree(
+		owner: string,
+		repo: string,
+		branch: string,
+	): Promise<Array<{ path: string; type: 'blob' | 'tree'; sha: string; size?: number }>> {
+		const data = await this.apiRequest<{
+			tree: Array<{ path: string; type: string; sha: string; size?: number }>;
+		}>(`/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`);
+
+		return data.tree
+			.filter((item) => item.type === 'blob')
+			.map((item) => ({
+				path: item.path,
+				type: item.type as 'blob' | 'tree',
+				sha: item.sha,
+				size: item.size,
+			}));
+	}
+
+	async loadFileContent(
+		owner: string,
+		repo: string,
+		branch: string,
+		filePath: string,
+	): Promise<{ content: string; sha: string }> {
+		const data = await this.apiRequest<{
+			content: string;
+			sha: string;
+			encoding: string;
+		}>(`/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}?ref=${branch}`);
+
+		const content = data.encoding === 'base64'
+			? decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))))
+			: data.content;
+
+		return { content, sha: data.sha };
+	}
+
 	async loadFile(
 		owner: string,
 		repo: string,

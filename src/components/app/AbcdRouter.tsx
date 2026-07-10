@@ -11,7 +11,6 @@ import abcdLogo from '../../assets/images/abcd-logo.jpg';
 import { useAuth } from '../../hooks/useAuth';
 import { gitHubSyncService, type ConflictInfo } from '../../services/GitHubSyncService';
 import { tokenStore } from '../../services/TokenStore';
-import { collabService } from '../../services/CollabService';
 import { fileStorageService } from '../../services/FileStorageService';
 import type { YjsDocUrl } from '../../types/yjs';
 import ConnectionPanel from '../github/ConnectionPanel';
@@ -50,70 +49,84 @@ const AbcdRouter: React.FC = () => {
 		}
 	}, [isInitializing]);
 
-	// Create a local Yjs project to host the file content in TeXlyre's editor
-	const setupEditorProject = useCallback(async (content: string, filePath: string) => {
+	// Create a local Yjs project and load ALL repo files into it
+	const setupEditorProject = useCallback(async (owner: string, repo: string, branch: string) => {
 		try {
 			setIsLoading(true);
-			// Generate a unique project ID for local use
-			const projectId = `github-${Date.now().toString(36)}`;
+			// Use a valid UUID that passes TeXlyre's URL validation
+			const projectId = crypto.randomUUID();
 			const yjsUrl = `yjs:${projectId}` as YjsDocUrl;
 
-			// Create a project entry in TeXlyre's local auth/project system
+			// Determine project type from file extensions in repo
+			const tree = await gitHubSyncService.loadRepoTree(owner, repo, branch);
+			const hasTypst = tree.some(f => f.path.endsWith('.typ'));
+			const projectType = hasTypst ? 'typst' : 'latex';
+
+			// Create project entry
 			if (isAuthenticated) {
 				await createProject({
-					name: filePath.split('/').pop() || 'Untitled',
-					description: `GitHub: ${gitHubSyncService.getConnectionInfo().owner}/${gitHubSyncService.getConnectionInfo().repo}`,
-					type: filePath.endsWith('.typ') ? 'typst' : 'latex',
+					name: `${owner}/${repo}`,
+					description: `GitHub: ${owner}/${repo} (${branch})`,
+					type: projectType,
 					docUrl: yjsUrl,
 					tags: ['github'],
 					isFavorite: false,
 				});
 			}
 
-			// Initialize file storage and store the file content
+			// Initialize file storage
 			await fileStorageService.initialize(yjsUrl);
-			await fileStorageService.storeFile({
-				id: `file-${Math.random().toString(36).slice(2)}`,
-				name: filePath.split('/').pop() || 'main.tex',
-				path: '/' + filePath.split('/').pop(),
-				type: 'file',
-				lastModified: Date.now(),
-				size: content.length,
-				mimeType: 'text/x-latex',
-				isBinary: false,
-				content,
-				isDeleted: false,
-			}, { showConflictDialog: false, preserveTimestamp: false });
+
+			// Load all text files from the repo (skip very large or binary files)
+			const textExtensions = ['.tex', '.typ', '.bib', '.sty', '.cls', '.txt', '.md', '.json', '.yaml', '.yml', '.toml', '.cfg', '.ini', '.log', '.bst'];
+			const filesToLoad = tree.filter(f =>
+				textExtensions.some(ext => f.path.toLowerCase().endsWith(ext)) &&
+				(f.size === undefined || f.size < 500000)
+			);
+
+			for (const file of filesToLoad) {
+				try {
+					const { content, sha } = await gitHubSyncService.loadFileContent(owner, repo, branch, file.path);
+					const fileName = file.path.split('/').pop() || file.path;
+					await fileStorageService.storeFile({
+						id: `file-${Math.random().toString(36).slice(2, 15)}`,
+						name: fileName,
+						path: '/' + file.path,
+						type: 'file',
+						lastModified: Date.now(),
+						size: content.length,
+						mimeType: fileName.endsWith('.tex') ? 'text/x-latex' : 'text/plain',
+						isBinary: false,
+						content,
+						isDeleted: false,
+					}, { showConflictDialog: false, preserveTimestamp: false });
+				} catch {
+					// Skip files that fail to load (permissions, encoding issues)
+				}
+			}
+
+			// Track connection info
+			tokenStore.addRecentProject({ owner, repo, branch, lastFile: null });
 
 			setDocUrl(yjsUrl);
-			setCurrentFile(filePath);
+			setCurrentFile(`${owner}/${repo}`);
 			setView('editor');
 		} catch (err) {
 			console.error('Failed to set up editor project:', err);
-			alert('Failed to open file in editor');
+			alert(`Failed to open project: ${err instanceof Error ? err.message : 'Unknown error'}`);
 		} finally {
 			setIsLoading(false);
 		}
 	}, [isAuthenticated, createProject]);
 
-	const handleFileOpen = useCallback(async (owner: string, repo: string, branch: string, filePath: string) => {
-		try {
-			setIsLoading(true);
-			const fileInfo = await gitHubSyncService.loadFile(owner, repo, branch, filePath);
-			await setupEditorProject(fileInfo.content, filePath);
-		} catch (err) {
-			alert(`Failed to load file: ${err instanceof Error ? err.message : 'Unknown error'}`);
-			setIsLoading(false);
-		}
+	const handleFileOpen = useCallback(async (owner: string, repo: string, branch: string, _filePath: string) => {
+		// When a file is selected from the browser, load the whole repo as a project
+		await setupEditorProject(owner, repo, branch);
 	}, [setupEditorProject]);
 
-	const handleOpenProject = useCallback(async (owner: string, repo: string, branch: string, lastFile: string | null) => {
-		if (lastFile) {
-			await handleFileOpen(owner, repo, branch, lastFile);
-		} else {
-			setView('connect');
-		}
-	}, [handleFileOpen]);
+	const handleOpenProject = useCallback(async (owner: string, repo: string, branch: string, _lastFile: string | null) => {
+		await setupEditorProject(owner, repo, branch);
+	}, [setupEditorProject]);
 
 	// Save handler — gets current content from fileStorageService
 	const handleSave = useCallback(async () => {
