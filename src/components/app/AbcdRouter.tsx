@@ -240,13 +240,8 @@ const AbcdRouter: React.FC = () => {
 			{/* ABCD Header */}
 			<header className="abcd-header">
 				<div className="abcd-header-left">
-					<img
-						src="https://immersivesoftwareengineering.ie/images/ISE_Logo.svg"
-						alt="ABCD"
-						className="abcd-logo"
-						onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-					/>
-					<span className="abcd-title">ABCD LaTeX</span>
+					<span className="abcd-logo-text">ABCD</span>
+					<span className="abcd-title">LaTeX</span>
 					{view === 'editor' && (
 						<button type="button" className="abcd-btn-back" onClick={handleBackToProjects}>
 							← Projects

@@ -25,15 +25,31 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
 		if (savedToken) setToken(savedToken);
 	}, []);
 
+	const parseRepoInput = (input: string): { owner: string; repo: string } | null => {
+		const trimmed = input.trim();
+		// https://github.com/owner/repo.git or https://github.com/owner/repo
+		const httpsMatch = trimmed.match(/(?:https?:\/\/)?github\.com\/([^/]+)\/([^/.]+?)(?:\.git)?\/?$/);
+		if (httpsMatch) return { owner: httpsMatch[1], repo: httpsMatch[2] };
+		// git@github.com:owner/repo.git
+		const sshMatch = trimmed.match(/git@github\.com:([^/]+)\/([^/.]+?)(?:\.git)?$/);
+		if (sshMatch) return { owner: sshMatch[1], repo: sshMatch[2] };
+		// Plain owner/repo
+		const parts = trimmed.split('/');
+		if (parts.length === 2 && parts[0].length > 0 && parts[1].length > 0) {
+			return { owner: parts[0], repo: parts[1] };
+		}
+		return null;
+	};
+
 	const handleConnect = async () => {
 		if (!token.trim() || !repoInput.trim()) {
-			setError('Please enter both a token and repository (owner/repo).');
+			setError('Please enter both a token and repository.');
 			return;
 		}
 
-		const parts = repoInput.trim().split('/');
-		if (parts.length !== 2) {
-			setError('Repository must be in the format: owner/repo');
+		const parsed = parseRepoInput(repoInput);
+		if (!parsed) {
+			setError('Enter owner/repo, a GitHub URL, or a clone URL (https://github.com/owner/repo.git)');
 			return;
 		}
 
@@ -45,7 +61,7 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
 			const user = await gitHubSyncService.testConnection();
 			setUserInfo(user);
 
-			const [owner, repo] = parts;
+			const { owner, repo } = parsed;
 			const branchList = await gitHubSyncService.listBranches(owner, repo);
 			setBranches(branchList);
 			if (!branchList.includes(branch)) {
@@ -66,7 +82,9 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
 
 	const handleBranchChange = async (newBranch: string) => {
 		setBranch(newBranch);
-		const [owner, repo] = repoInput.split('/');
+		const parsed = parseRepoInput(repoInput);
+		if (!parsed) return;
+		const { owner, repo } = parsed;
 		try {
 			const fileList = await gitHubSyncService.listFiles(owner, repo, newBranch);
 			setFiles(fileList);
@@ -77,7 +95,9 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
 	};
 
 	const handleNavigate = async (item: FileListItem) => {
-		const [owner, repo] = repoInput.split('/');
+		const parsed = parseRepoInput(repoInput);
+		if (!parsed) return;
+		const { owner, repo } = parsed;
 		if (item.type === 'dir') {
 			try {
 				const fileList = await gitHubSyncService.listFiles(owner, repo, branch, item.path);
@@ -92,7 +112,9 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
 	};
 
 	const handleNavigateUp = async () => {
-		const [owner, repo] = repoInput.split('/');
+		const parsed = parseRepoInput(repoInput);
+		if (!parsed) return;
+		const { owner, repo } = parsed;
 		const parentPath = currentPath.split('/').slice(0, -1).join('/');
 		try {
 			const fileList = await gitHubSyncService.listFiles(owner, repo, branch, parentPath);
@@ -148,13 +170,13 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
 				</div>
 
 				<div className="abcd-field">
-					<label htmlFor="repo-input">Repository (owner/repo)</label>
+					<label htmlFor="repo-input">Repository</label>
 					<input
 						id="repo-input"
 						type="text"
 						value={repoInput}
 						onChange={(e) => setRepoInput(e.target.value)}
-						placeholder="andylegear/my-latex-project"
+						placeholder="owner/repo or https://github.com/owner/repo.git"
 						disabled={isConnected}
 					/>
 				</div>

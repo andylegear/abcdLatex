@@ -37,6 +37,16 @@
   width: auto;
 }
 
+.abcd-logo-text {
+  font-weight: 900;
+  font-size: 1.3rem;
+  background: linear-gradient(135deg, #0969da, #2da44e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
 .abcd-title {
   font-weight: 700;
   font-size: 1.1rem;
@@ -85,11 +95,15 @@
   max-width: 800px;
   margin: 2rem auto;
   padding: 0 1.5rem;
+  color: #1f2937;
+  background: #f9fafb;
+  min-height: calc(100vh - 48px);
 }
 
 /* Connection panel */
 .abcd-connection-panel {
-  background: var(--pico-background-color, #fff);
+  background: #ffffff;
+  color: #1f2937;
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -118,6 +132,8 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.9rem;
+  background: #ffffff;
+  color: #1f2937;
 }
 
 .abcd-token-row {
@@ -284,7 +300,8 @@
   padding: 0.6rem 0.75rem;
   border: none;
   border-bottom: 1px solid #f3f4f6;
-  background: transparent;
+  background: #ffffff;
+  color: #1f2937;
   cursor: pointer;
   font-size: 0.9rem;
   transition: background 0.1s;
@@ -300,7 +317,8 @@
 
 /* Recent projects */
 .abcd-recent-projects {
-  background: var(--pico-background-color, #fff);
+  background: #ffffff;
+  color: #1f2937;
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -350,6 +368,7 @@
   cursor: pointer;
   text-align: left;
   width: 100%;
+  color: #1f2937;
 }
 
 .abcd-recent-item-main {
@@ -404,7 +423,8 @@
 .abcd-recent-empty {
   text-align: center;
   padding: 3rem 2rem;
-  background: var(--pico-background-color, #fff);
+  background: #ffffff;
+  color: #1f2937;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
