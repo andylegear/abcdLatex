@@ -169,7 +169,6 @@ const AbcdApp: React.FC<AbcdAppProps> = ({ onFileReady, editorContent }) => {
 								value={commitMessage}
 								onChange={(e) => setCommitMessage(e.target.value)}
 								placeholder="Describe your change"
-								autoFocus
 								onKeyDown={(e) => e.key === 'Enter' && handleCommitConfirm()}
 							/>
 						</div>

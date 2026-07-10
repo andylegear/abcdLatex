@@ -55,11 +55,12 @@ const RecentProjects: React.FC<RecentProjectsProps> = ({ onOpenProject, onNewCon
 					<div
 						key={`${project.owner}/${project.repo}@${project.branch}`}
 						className="abcd-recent-item"
-						onClick={() => onOpenProject(project.owner, project.repo, project.branch, project.lastFile)}
-						onKeyDown={(e) => e.key === 'Enter' && onOpenProject(project.owner, project.repo, project.branch, project.lastFile)}
-						tabIndex={0}
-						role="button"
 					>
+						<button
+							type="button"
+							className="abcd-recent-item-content"
+							onClick={() => onOpenProject(project.owner, project.repo, project.branch, project.lastFile)}
+						>
 						<div className="abcd-recent-item-main">
 							<span className="abcd-recent-item-repo">
 								{project.owner}/{project.repo}
@@ -78,6 +79,7 @@ const RecentProjects: React.FC<RecentProjectsProps> = ({ onOpenProject, onNewCon
 								{formatDate(project.lastOpened)}
 							</span>
 						</div>
+						</button>
 						<button
 							type="button"
 							className="abcd-recent-remove"

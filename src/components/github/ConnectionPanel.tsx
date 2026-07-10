@@ -208,27 +208,23 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
 							📁 /{currentPath || ''}
 						</div>
 						{currentPath && (
-							<div
+							<button
+								type="button"
 								className="abcd-file-item abcd-file-item-up"
 								onClick={handleNavigateUp}
-								onKeyDown={(e) => e.key === 'Enter' && handleNavigateUp()}
-								tabIndex={0}
-								role="button"
 							>
 								⬆️ ..
-							</div>
+							</button>
 						)}
 						{files.map((item) => (
-							<div
+							<button
+								type="button"
 								key={item.path}
 								className={`abcd-file-item ${item.type === 'dir' ? 'abcd-file-dir' : 'abcd-file-file'}`}
 								onClick={() => handleNavigate(item)}
-								onKeyDown={(e) => e.key === 'Enter' && handleNavigate(item)}
-								tabIndex={0}
-								role="button"
 							>
 								{item.type === 'dir' ? '📁' : '📄'} {item.name}
-							</div>
+							</button>
 						))}
 					</div>
 				</div>
