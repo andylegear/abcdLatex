@@ -1,6 +1,7 @@
 // src/components/github/AbcdApp.tsx
 import type React from 'react';
 import { useState, useCallback, useEffect } from 'react';
+import abcdLogo from '../../assets/images/abcd-logo.jpg';
 import { gitHubSyncService, type ConflictInfo } from '../../services/GitHubSyncService';
 import { tokenStore } from '../../services/TokenStore';
 import ConnectionPanel from './ConnectionPanel';
@@ -112,8 +113,8 @@ const AbcdApp: React.FC<AbcdAppProps> = ({ onFileReady, editorContent }) => {
 			{/* Header bar - always visible */}
 			<header className="abcd-header">
 				<div className="abcd-header-left">
-					<span className="abcd-logo-text">ABCD</span>
-					<span className="abcd-title">LaTeX</span>
+					<img src={abcdLogo} alt="ABCD" className="abcd-logo" />
+					<span className="abcd-title">ABCD LaTeX</span>
 					{view === 'editor' && (
 						<button type="button" className="abcd-btn-back" onClick={handleBackToProjects}>
 							← Projects

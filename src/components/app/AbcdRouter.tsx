@@ -7,6 +7,7 @@
 import type React from 'react';
 import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 
+import abcdLogo from '../../assets/images/abcd-logo.jpg';
 import { useAuth } from '../../hooks/useAuth';
 import { gitHubSyncService, type ConflictInfo } from '../../services/GitHubSyncService';
 import { tokenStore } from '../../services/TokenStore';
@@ -36,12 +37,17 @@ const AbcdRouter: React.FC = () => {
 	const [docUrl, setDocUrl] = useState<YjsDocUrl | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
-	// Determine initial view
+	// Determine initial view and show help on first visit
 	useEffect(() => {
 		if (isInitializing) return;
 		const hasToken = !!tokenStore.getToken();
 		const hasProjects = tokenStore.getRecentProjects().length > 0;
 		setView(hasToken && hasProjects ? 'landing' : 'connect');
+
+		// Show help page automatically on first ever visit
+		if (!tokenStore.isTourSeen()) {
+			setShowHelp(true);
+		}
 	}, [isInitializing]);
 
 	// Create a local Yjs project to host the file content in TeXlyre's editor
@@ -240,8 +246,8 @@ const AbcdRouter: React.FC = () => {
 			{/* ABCD Header */}
 			<header className="abcd-header">
 				<div className="abcd-header-left">
-					<span className="abcd-logo-text">ABCD</span>
-					<span className="abcd-title">LaTeX</span>
+					<img src={abcdLogo} alt="ABCD" className="abcd-logo" />
+					<span className="abcd-title">ABCD LaTeX</span>
 					{view === 'editor' && (
 						<button type="button" className="abcd-btn-back" onClick={handleBackToProjects}>
 							← Projects
@@ -259,9 +265,9 @@ const AbcdRouter: React.FC = () => {
 						type="button"
 						className="abcd-help-btn"
 						onClick={() => setShowHelp(true)}
-						title="Help"
+						title="Help & Getting Started"
 					>
-						?
+						? Help
 					</button>
 				</div>
 			</header>

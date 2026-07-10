@@ -33,8 +33,9 @@
 }
 
 .abcd-logo {
-  height: 28px;
+  height: 32px;
   width: auto;
+  border-radius: 4px;
 }
 
 .abcd-logo-text {
@@ -45,6 +46,26 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.5px;
+}
+
+/* Loading screen logos */
+.abcd-loading-logos {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.abcd-loading-logo {
+  height: 48px;
+  width: auto;
+  border-radius: 6px;
+}
+
+.abcd-loading-plus {
+  font-size: 1.5rem;
+  color: #6b7280;
+  font-weight: 300;
 }
 
 .abcd-title {
@@ -73,21 +94,21 @@
 }
 
 .abcd-help-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background: transparent;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
 }
 
 .abcd-help-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* Main content area */

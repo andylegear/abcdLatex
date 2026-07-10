@@ -64,11 +64,12 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ onFileOpen }) => {
 			const { owner, repo } = parsed;
 			const branchList = await gitHubSyncService.listBranches(owner, repo);
 			setBranches(branchList);
-			if (!branchList.includes(branch)) {
-				setBranch(branchList[0] || 'main');
-			}
 
-			const fileList = await gitHubSyncService.listFiles(owner, repo, branch);
+			// Use the current branch if it exists, otherwise pick the first available
+			const resolvedBranch = branchList.includes(branch) ? branch : (branchList[0] || 'main');
+			setBranch(resolvedBranch);
+
+			const fileList = await gitHubSyncService.listFiles(owner, repo, resolvedBranch);
 			setFiles(fileList);
 			setIsConnected(true);
 			setCurrentPath('');
